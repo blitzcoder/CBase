@@ -1,0 +1,37 @@
+// CreateQuad Example 
+// ------------------ 
+
+BASIC(
+
+int camera, light, quad;
+
+function MAIN app
+	Graphics3D(800,600,0,2);
+	
+	camera=CreateCamera(0);
+
+	light=CreateLight(1,0);
+	RotateEntity(light,90,0,0,0);
+
+	// Create a quad 
+	quad=CreateQuad(0);    
+    EntityTexture(quad, LoadTexture("../media/test.png", 1), 0, 0);
+
+	PositionEntity(quad,0,0,5,0);
+	SetUpdateRate(60);
+end
+
+function Render event
+	if KeyHit(KEY_ESC) do
+		End()
+	end
+	TurnEntity(quad,1,1,1,0);
+	Wireframe(KeyDown(KEY_W));	
+	RenderWorld();	
+	Text(280,500,"Hold [w] key for wireframe");	
+	FormatString(TextBuffer,"Tris: %d",TrisRendered());	
+	Text(10,20,TextBuffer);
+	Flip(); 	
+end 
+
+)

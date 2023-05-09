@@ -1,0 +1,31 @@
+// CreateCube Example 
+// ------------------ 
+
+BASIC(
+
+int camera, light, cube;
+
+function MAIN app
+	Graphics3D(640,480,0,2);
+	
+	camera=CreateCamera(0);
+
+	light=CreateLight(1,0);
+	RotateEntity(light,90,0,0,0);
+
+	// Create cube 
+	cube=CreateCube(0);
+
+	PositionEntity(cube,0,0,5,0);
+	SetUpdateRate(60);
+end
+
+function Render event
+	if KeyHit(KEY_ESC) do
+		End()
+	end	
+	RenderWorld();	
+	Flip(); 	
+end 
+
+)

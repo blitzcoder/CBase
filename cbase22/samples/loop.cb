@@ -1,0 +1,35 @@
+// For Loop Example 
+// ---------------- 
+
+BASIC(
+
+function MAIN app	
+	int a;
+	Print("Starting For Loop...\n");
+	for a in 0 to 10 do
+		if a % 2 == 0 do // C way of doing Steps
+			Print("For Step Loop: %d\n",a);
+		end
+		Print("For Loop: %d\n",a); // You can still loop normally at the same time
+	end
+	
+	int b = 0;
+	Print("\nStarting While Loop...\n");
+	while b < 10 do
+		b++;
+		Print("While Loop: %d\n",b);
+	end
+	
+	Print("\nStarting Repeat Until Loop...\n");
+	int c = 0;
+	repeat 
+		c++;
+		Print("Repeat Loop: %d\n",c);		
+	until(c == 10)
+end
+
+function Render event
+	// empty but required for console apps
+end
+
+)

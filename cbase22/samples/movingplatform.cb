@@ -1,0 +1,84 @@
+// Moving Platform Example 
+// -----------------------
+
+BASIC(
+
+int camera, light;
+int pivot, sphere, cube, ground;
+float hh, p;
+
+function MAIN app
+	Graphics3D(800,600,0,2);
+	
+	// Camera and Pivot
+	pivot = CreatePivot(0);
+	camera = CreateCamera(pivot);
+	CameraClsColor(camera,100,150,250);
+	MoveEntity(camera,0,7,-15);
+
+	// Light
+	light = CreateLight(2,0);
+	PositionEntity(light,-15,30,-15,0);
+	
+	// Ground
+	ground = CreatePlane(1,pivot);
+    int tex = LoadTexture("../media/terrain-1.jpg", 1);
+    ScaleTexture(tex, .0005, .0005);
+    EntityTexture(ground, tex, 0, 0);	
+	MoveEntity(ground,0,1,0);
+	EntityType(ground,2,0);
+
+	// Platform 
+	cube = CreateCube(0);
+	EntityTexture(cube, LoadTexture("../media/crate.bmp", 1), 0, 0);	
+	ScaleEntity(cube,4,4,4,0);
+	PositionEntity(cube,0,-2.99,0,0);
+	CreateShadow(cube,0);
+	EntityType(cube,2,0);
+
+	// Player
+	sphere = CreateSphere(16,pivot);
+	RotateMesh(sphere,45,0,0);
+	EntityTexture(sphere, LoadTexture("../media/ball.jpg", 1), 0, 0);		
+	PositionEntity(sphere,-10,2,0,0);
+	CreateShadow(sphere,0);
+	EntityType(sphere,1,0);
+
+	// Set Collisions
+	Collisions(1,2,2,3);
+	
+	SetUpdateRate(60);
+end
+
+function Render event
+	if KeyHit(KEY_ESC) do
+		End()
+	end
+
+    if KeyDown(KEY_LEFT) then MoveEntity(sphere,-0.2,0,0);
+    if KeyDown(KEY_RIGHT) then MoveEntity(sphere,0.2,0,0);
+    if KeyDown(KEY_UP) then MoveEntity(sphere,0,0,0.2); 
+    if KeyDown(KEY_DOWN) then MoveEntity(sphere,0,0,-0.2);	
+	
+	MoveEntity(sphere,0,-1,0);
+	UpdateWorld(0);
+
+	p = p + 2;
+	hh = Sin(p) * 0.1;
+	
+	EntityParent(cube,0,1);
+	
+	MoveEntity(pivot,0,-hh,0);	
+	
+	EntityParent(cube,pivot,1);
+	
+	UpdateWorld(0);
+	
+	RenderWorld();
+	Color(255,255,255);
+	FormatString(TextBuffer,"Use Arrow Keys to Move Ball",hh);	
+	Text(10,20,TextBuffer);
+	Flip(); 	
+end 
+
+)

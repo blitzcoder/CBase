@@ -1,0 +1,54 @@
+// Shader Example 2
+// ---------------- 
+
+BASIC(
+
+int camera, light, toggle;
+int tree, shader, shader2;
+
+// Alpha Discard Shader Demo
+
+function MAIN app
+	Graphics3D(800,600,0,2);
+	
+	camera = CreateCamera(0);
+	CameraClsColor(camera,100,150,200);
+
+	light = CreateLight(1,0);
+	RotateEntity(light,90,0,0,0);
+
+	// Use LoadAnimMesh for FindChild command
+	tree = LoadAnimMesh("../media/tree.b3d",0);
+	PositionEntity(tree,0,-40,60,0);
+
+	shader=LoadShader("","../media/shaders/default.vert.glsl","../media/shaders/diffusealpha.frag.glsl");
+	ShaderTexture(shader,LoadTexture("../Media/qqqq.png",2),"texture0",0);	
+	ShadeEntity(FindChild(tree,"Leaf"),shader);
+	
+	shader2=LoadShader("","../media/shaders/default.vert.glsl","../media/shaders/default.frag.glsl");
+		
+	SetUpdateRate(60);
+end
+
+function Render event
+	if KeyHit(KEY_ESC) do
+		End()
+	end
+
+	if KeyHit(KEY_SPACEBAR) do toggle = not toggle end
+		
+	if toggle == 0 do
+		ShadeEntity(FindChild(tree,"Leaf"),shader);
+	elsedo
+		ShadeEntity(FindChild(tree,"Leaf"),shader2);
+	end	
+	
+	TurnEntity(tree,0,.1,0,0);
+	
+	RenderWorld();
+	Text(320,500,"Alpha Discard Shader");
+	Text(290,530,"Press <spacebar> to Toggle");
+	Flip(); 	
+end 
+
+)  

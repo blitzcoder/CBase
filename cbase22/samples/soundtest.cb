@@ -1,0 +1,43 @@
+// Sound Example 
+// ------------- 
+
+BASIC(
+
+int camera, light, cube;
+int snd, bg, toggle = 1;
+
+function MAIN app
+	Graphics3D(800,600,0,2);
+	
+	light = CreateLight(1,0);
+	RotateEntity(light,-30,-15,0,0);	
+	
+	camera = CreateCamera(0);
+
+	bg = LoadSound("../media/tune2.mp3");
+	snd = LoadSound("../media/ufo.wav");
+	
+	SetUpdateRate(60);
+end
+
+function Render event
+	if KeyHit(KEY_ESC) do
+		End()
+	end		
+
+	if MouseHit(1) then PlaySounds(snd);
+	if KeyHit(KEY_SPACEBAR) do toggle = not toggle end
+
+	if toggle == 0 do
+		StopSound(bg); 
+	elsedo
+		PlayMusic(bg);
+	end
+			
+	RenderWorld();	
+	Text(250,500,"Toggle <Space> to Play/Pause Music");
+	Text(265,520,"Left Mouse Button to Play Sound");
+	Flip(); 	
+end 
+
+)  

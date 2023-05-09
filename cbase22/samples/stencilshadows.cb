@@ -1,0 +1,70 @@
+// Stencil Shadows Example 
+// -----------------------
+
+BASIC(
+
+int camera, light, pivot1, pivot2, plane;
+int cube[3];
+
+function MAIN app
+
+	Graphics3D(800,600,0,2);
+
+	// Camera
+	camera = CreateCamera(0);
+	CameraClsColor(camera,39,40,34);
+	PositionEntity(camera,0,5,-15,0);
+
+	// Light and Pivots
+	pivot1 = CreatePivot(0);
+	pivot2 = CreatePivot(0);
+	light = CreateLight(1,pivot1);
+	PositionEntity(light,25,10,-25,0);
+				
+	// Create infinite plane
+	plane = CreatePlane(1,0);
+	MoveEntity(plane,0,-2.0,0);
+    int tex = LoadTexture("../media/terrain-1.jpg", 1);
+    ScaleTexture(tex, .0005, .0005);
+    EntityTexture(plane, tex, 0, 0);	
+
+	// Create cubes
+	cube[0] = CreateCube(0);
+	EntityTexture(cube[0], LoadTexture("../media/crate.bmp", 1), 0, 0);		
+	cube[1] = CopyEntity(cube[0],pivot2);
+	EntityTexture(cube[1], LoadTexture("../media/test.png", 1), 0, 0);		
+	cube[2] = CopyEntity(cube[1],pivot2);	
+	PositionEntity(cube[1],-5,-1,-5,0);
+	PositionEntity(cube[2],5,-1,5,0);
+	
+	// Shadow Objects
+	int i;
+	for i in 0 to 2 do
+		CreateShadow(cube[i],0);
+	end
+	
+	PointEntity(camera,cube[0],0);
+	SetUpdateRate(60);
+end
+
+function Render event
+	if KeyHit(KEY_ESC) do
+		End()
+	end		
+	
+	TurnEntity(pivot1,0,KeyDown(KEY_D)-KeyDown(KEY_A),0,0);
+	
+	TurnEntity(pivot2,0,KeyDown(KEY_UP)-KeyDown(KEY_DOWN),0,0);
+	TurnEntity(cube[1],0,KeyDown(KEY_UP)-KeyDown(KEY_DOWN),0,0);
+	TurnEntity(cube[2],0,KeyDown(KEY_UP)-KeyDown(KEY_DOWN),0,0);
+	
+	TurnEntity(cube[0],1,1,1,0);
+	
+	RenderWorld();
+	Color(255,255,255);
+	Text(10,20,"A/D - Rotate Light");
+	Text(10,40,"Up/Down - Rotate Cubes");
+	Flip(); 	
+end 
+
+)

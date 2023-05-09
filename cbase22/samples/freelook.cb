@@ -1,0 +1,71 @@
+// FreeLook Camera Example 
+// -----------------------
+
+BASIC(
+
+int camera, light, sky, cube;
+float sens = 0.3; // Mouse Sensitivity
+float camrotx, camroty;
+
+function MAIN app
+	Graphics3D(800,600,0,2);
+	
+	camera = CreateCamera(0);
+
+	light = CreateLight(1,0);
+	RotateEntity(light,-30,-15,0,0);
+	
+	cube = LoadMesh("../media/wcrate1.b3d",0);
+	ScaleEntity(cube,.1,.1,.1,1);
+		
+	MoveEntity(camera,0,2,-25);
+	PointEntity(camera,cube,0);
+	MoveMouse(400,300);
+
+	// Create sphere
+	sky = CreateSphere(32,0);
+
+	// Scale sphere
+	ScaleEntity(sky,1000,1000,1000,0);
+
+	// Texture sphere with sky texture
+	int sky_tex = LoadTexture("../media/sky.bmp",2);
+	EntityTexture(sky,sky_tex,0,0);
+	EntityFX(sky,9);
+
+	// Flip mesh so we can see the inside of it
+	FlipMesh(sky);
+	
+	SetUpdateRate(60);
+end
+
+function Render event
+	if KeyHit(KEY_ESC) do
+		End()
+	end
+	
+	MoveMouse(400,300);
+		
+	camrotx = camrotx - MouseXSpeed() * sens; 
+	camroty = camroty - MouseYSpeed() * sens;			
+	float FBCTRL = (KeyDown(KEY_D)-KeyDown(KEY_A)) * 1; // Forward Back Controls
+	float LRCTRL = (KeyDown(KEY_W)-KeyDown(KEY_S)) * 1; // Left Right Controls
+	
+	RotateEntity( camera, camroty,camrotx, 0,0 );			
+	MoveEntity(camera, FBCTRL, 0, LRCTRL);	
+	
+	PositionEntity(sky,EntityX(camera,0),EntityY(camera,0),EntityZ(camera,0),0);
+	
+	RenderWorld();
+	
+	Color(0,0,0);
+	Text(320,500,"WASD to Move");	
+	Text(320,520,"Mouse to Look");	
+	Color(255,255,255);
+	Text(319,499,"WASD to Move");	
+	Text(319,519,"Mouse to Look");	
+		
+	Flip(); 	
+end 
+
+)  

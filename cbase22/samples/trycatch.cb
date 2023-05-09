@@ -1,0 +1,46 @@
+// Try Catch Example 
+// ----------------- 
+
+BASIC(
+
+string foo; // String Type 1 = Character Array Object
+str bar;	// String Type 2 = Character Pointer
+
+type myEx
+	field code as int, msg as string
+endtype
+
+function handle as (e as myEx) of void do
+	Print("Handled exception with code %d and message %s\n", e->code, e->msg->data)
+end
+
+function baz as (x as int) of int do
+	Print("baz got: %d\n", x)
+	let e as myEx equal new(myEx) end
+	e->code = 67; 
+	e->msg = Str("Hello");			// Storing values directly in string type, uses the Str() command
+	throw(e)						// Throw exception	
+end
+
+function MAIN app
+	foo = Str("Hello, World\n");	
+	bar = "This is bar\n";
+	Print("I say %s",foo->data);	// Print string with formatting	
+	Print("Then %s", bar);			// Print str also works
+	print(foo);						// print debug utility with string, no formatting
+	
+	try
+		Print("Trying baz...\n");
+		baz(45);
+		Print("Tried baz!\n")
+	catch(myEx)
+		Print("Caught a myEx!\n"); 
+		handle((myEx)exception);
+	end
+end
+
+function Render event
+	// empty but required for console apps
+end
+
+)

@@ -1,0 +1,59 @@
+// Text and Variables Example 
+// --------------------------
+
+BASIC(
+
+int camera;
+int x = 1;
+float f = 10;
+str msg = "Text Command with Variable Types";
+str mystr;
+
+function MAIN app
+	string temp = Str("X is");	
+	mystr = Str2(temp);		// Convert String Type 1 to Type 2
+	
+	Graphics3D(800,600,0,2);
+	camera = CreateCamera(0);
+	SetUpdateRate(60);
+end
+
+function Render event
+
+	Delay(100); // Some delay	
+	if KeyHit(KEY_ESC) do
+		End()
+	end		
+
+	x = x + 10;
+	f = f + .1;	
+	RenderWorld();	
+
+	Color(255,255,255);
+	// Display it directly with str (Strings)
+	Text(10,20,msg); 
+	
+	Color(255,255,0);	
+	// str concatenate with other variable types
+	FormatString(TextBuffer,"%s %d.. ",mystr,x); 
+	Text(10,40,TextBuffer);
+		
+	// Displaying Integer variable in Text
+	FormatString(TextBuffer,"Integer: %d",x);		
+	Color(255,0,0);
+	Text(10,60,TextBuffer);
+	
+	// Displaying Float variable in Text
+	FormatString(TextBuffer,"Float: %f",f);		
+	Color(0,255,0);
+	Text(10,80,TextBuffer);	
+	
+	// Display multiple variables and of different types in Text
+	FormatString(TextBuffer,"Integer: %d Float: %.3f",x,f);		
+	Color(100,150,250);
+	Text(10,100,TextBuffer);			
+	
+	Flip();
+end
+
+)

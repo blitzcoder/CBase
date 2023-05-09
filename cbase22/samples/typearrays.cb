@@ -1,0 +1,30 @@
+// Type Arrays Example 
+// ------------------- 
+
+#define count 3
+
+BASIC(
+
+type holiday
+	field date as string
+	field name as string
+endtype
+
+newtype holiday events[count];
+
+function MAIN app
+	
+	events[0].date = Str("January 1"); events[0].name = Str("New Year");
+	events[1].date = Str("December 25"); events[1].name = Str("Christmas");
+	events[2].date = Str("February 14"); events[2].name = Str("Valentine's Day");
+
+	int x; for x in 0 to count-1 do
+		Print("%s is %s\n",events[x].date->data, events[x].name->data);	
+	end
+end
+
+function Render event
+	// empty but still required for console apps
+end
+
+)

@@ -1,0 +1,20 @@
+// Arrays Example 
+// -------------- 
+
+BASIC(
+
+function MAIN app
+	str day[7] = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};	
+	int x;
+	for x in 0 to 6 do
+		if x % 2 == 0 do // C way of doing Steps
+			Print("%s\n",day[x]);
+		end
+	end
+end
+
+function Render event
+	// empty but still required for console apps
+end
+
+)

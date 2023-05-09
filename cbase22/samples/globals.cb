@@ -1,0 +1,27 @@
+// Global Variable Example 
+// ----------------------- 
+
+BASIC(
+
+int camera;
+int x = 10;
+
+function MAIN app
+	Graphics3D(800,600,0,2);
+	Print("Value of x is %d",x);
+	camera = CreateCamera(0);
+	SetUpdateRate(60);
+	x = 20;
+end
+
+function Render event
+	RenderWorld();
+	FormatString(TextBuffer,"Value of x is now %d",x);		
+	Text(10,20,TextBuffer);
+	if KeyHit(KEY_ESC) do
+		End()
+	end			
+	Flip(); 	
+end
+
+)

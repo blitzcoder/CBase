@@ -1,0 +1,45 @@
+// PostFX Example 
+// -------------- 
+
+BASIC(
+
+int camera, light, cube;
+int shader, pixelart;
+
+function MAIN app
+	Graphics3D(800,600,0,2);
+	
+	camera = CreateCamera(0);
+	CameraClsColor(camera,100,150,2500);
+
+	light = CreateLight(1,0);
+	RotateEntity(light,-90,-45,0,0);
+
+	// Create cube 
+	cube = LoadMesh("../media/wcrate1.b3d",0);
+	ScaleEntity(cube,.1,.1,.1,0);
+	PositionEntity(cube,0,-2,8,0);
+	
+	shader = LoadShader("","../media/shaders/pixelate.vert.glsl","../media/shaders/pixelate.frag.glsl");
+	pixelart = CreatePostFX(camera,1);
+	AddRenderTarget(pixelart,0,1,0,8,1.0);
+	PostFXBuffer(pixelart,0,0,1,0);
+	PostFXShader(pixelart,0,shader);
+	SetInteger(shader, "dithering", 1);
+	SetFloat(shader, "depth", 32);
+	SetFloat2(shader, "screen", 160, 120);		
+	
+	SetUpdateRate(60);
+end
+
+function Render event
+	if KeyHit(KEY_ESC) do
+		End()
+	end		
+	TurnEntity(cube,.05,1,.05,0);
+	RenderWorld();
+	Text(330,500,"Pixelate Shader");
+	Flip(); 	
+end 
+
+)  

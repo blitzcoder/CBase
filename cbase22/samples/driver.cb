@@ -1,0 +1,159 @@
+// Mak Driver Demo
+// --------------- 
+
+BASIC(
+
+int BODY = 1, WHEEL = 2, SCENE = 3;
+int camera, car, target;
+
+float speed = 0.0, GRAVITY = -0.01;
+float x_vel, y_vel, z_vel;
+float prev_x, prev_y, prev_z;
+
+type ent
+	field m as int
+	field x as int
+	field z as float
+endtype 
+
+newtype ent wheel[5];
+
+function MAIN app   
+	Graphics3D(800,600,0,2);
+
+	Collisions(BODY, SCENE, 2, 3);
+	Collisions(WHEEL, SCENE, 2, 3);
+
+	car = LoadMesh("../media/car.b3d", 0);
+	ScaleMesh(car, 1, 1, -1);
+	FlipMesh(car);
+	FitMesh(car, -1.5, -1, -3, 3, 2, 6, 0);
+	PositionEntity(car, 0, 70, 0, 0);
+	EntityShininess(car, 1);
+	EntityType(car, BODY, 0);
+
+	int terr = LoadTerrain("../media/heightmap_256.png", 0);
+	ScaleEntity(terr, 2, 2, 2, 0);
+	PositionEntity(terr, -150, 0, 450, 0);  
+
+	int tex = LoadTexture("../media/terrain-1.jpg", 1);
+	ScaleTexture(tex, 20, 20);
+	EntityTexture(terr, tex, 0, 0);
+	EntityType(terr, SCENE, 0);
+
+	wheel[1].x = -1; wheel[1].z = 1.5;
+	wheel[2].x = 1; wheel[2].z = 1.5;
+	wheel[3].x = -1; wheel[3].z = -1.5;
+	wheel[4].x = 1; wheel[4].z = -1.5;
+
+	int i;
+	for i in 1 to 4 do
+		wheel[i].m = CreateSphere(8, car);
+		EntityAlpha(wheel[i].m, 0.5);
+		ScaleEntity(wheel[i].m, .5, .5, .5, 0);
+		EntityRadius(wheel[i].m, .5, 0);
+		PositionEntity(wheel[i].m, wheel[i].x, 0, wheel[i].z, 0);
+		EntityType(wheel[i].m, WHEEL, 0);	   
+	end 
+
+	int light = CreateLight(1, 0);
+	TurnEntity(light, 45, 45, 0, 0);
+
+	target = CreatePivot(car);
+	PositionEntity(target, 0, 5, -12, 0);
+
+	camera = CreateCamera(0);
+	CameraClsColor(camera, 0, 128, 255);
+
+	x_vel = 0.0, prev_x = EntityX(car, 0);
+	y_vel = 0.0, prev_y = EntityY(car, 0);
+	z_vel = 0.0, prev_z = EntityZ(car, 0);  
+
+	SetUpdateRate(60);
+	End
+end
+
+function Render event   
+	if KeyHit(KEY_ESC) do
+		End()
+	end	 
+
+	float cx = 0, cy = 0, cz = 0;
+	float zx = 0, zy = 0, zz = 0;
+
+	if speed > 0.01 or speed < -0.01 do
+		zx = (EntityX(wheel[2].m, 1) + EntityX(wheel[4].m, 1)) / 2;
+		zx = zx - (EntityX(wheel[1].m, 1) + EntityX(wheel[3].m, 1)) / 2;
+		zy = (EntityY(wheel[2].m, 1) + EntityY(wheel[4].m, 1)) / 2;
+		zy = zy - (EntityY(wheel[1].m, 1) + EntityY(wheel[3].m, 1)) / 2;
+		zz = (EntityZ(wheel[2].m, 1) + EntityZ(wheel[4].m, 1)) / 2;
+		zz = zz - (EntityZ(wheel[1].m, 1) + EntityZ(wheel[3].m, 1)) / 2;
+
+		AlignToVector(car, zx, zy, zz, 1, 1);
+
+		zx = (EntityX(wheel[1].m, 1) + EntityX(wheel[2].m, 1)) / 2;
+		zx = zx - (EntityX(wheel[3].m, 1) + EntityX(wheel[4].m, 1)) / 2;
+		zy = (EntityY(wheel[1].m, 1) + EntityY(wheel[2].m, 1)) / 2;
+		zy = zy - (EntityY(wheel[3].m, 1) + EntityY(wheel[4].m, 1)) / 2;
+		zz = (EntityZ(wheel[1].m, 1) + EntityZ(wheel[2].m, 1)) / 2;
+		zz = zz - (EntityZ(wheel[3].m, 1) + EntityZ(wheel[4].m, 1)) / 2;
+
+		AlignToVector(car, zx, zy, zz, 3, 1);
+	end
+
+	cx = EntityX(car, 0), x_vel = cx - prev_x, prev_x = cx;
+	cy = EntityY(car, 0), y_vel = cy - prev_y, prev_y = cy;
+	cz = EntityZ(car, 0), z_vel = cz - prev_z, prev_z = cz;
+
+	int i;
+	for i in 1 to 4 do
+		PositionEntity(wheel[i].m, 0, 0, 0, 0); 
+		PositionEntity(wheel[i].m, wheel[i].x, -1, wheel[i].z, 0);
+	end
+
+	if EntityCollided(car, SCENE) do				
+		// Turn Left
+		if KeyDown(KEY_A) do
+			TurnEntity(car, 0, 3, 0, 0);
+		end
+		// Turn Right
+		if KeyDown(KEY_D) do
+			TurnEntity(car, 0, -3, 0, 0);
+		end	 
+		// Move Forward
+		if KeyDown(KEY_W) do		
+			speed = speed + 0.2;
+			if speed > 0.7 do
+				speed = 0.7;
+			end
+		// Move Reverse 
+		elseif KeyDown(KEY_S) do		
+			speed = speed - 0.2;
+			if speed < -0.5 do
+				speed = -0.5;
+			end
+		elsedo
+			speed = speed *0.98;			
+		end
+
+		MoveEntity(car, 0, 0, speed);
+		TranslateEntity(car, 0, GRAVITY, 0, 0);	 
+	elsedo
+		TranslateEntity(car, x_vel, y_vel + GRAVITY, z_vel, 0);
+	end
+
+	float dx = 0, dy = 0, dz = 0;
+
+	dx = EntityX(target, 1) - EntityX(camera, 0);
+	dy = EntityY(target, 1) - EntityY(camera, 0);
+	dz = EntityZ(target, 1) - EntityZ(camera, 0);
+	TranslateEntity(camera, dx *.1, dy *.1, dz *.1, 0);
+
+	PointEntity(camera, car, 0.0);  
+
+	UpdateWorld(0);	 
+	RenderWorld();  
+	Flip();	 
+end 
+
+)

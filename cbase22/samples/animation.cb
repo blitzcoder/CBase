@@ -1,0 +1,53 @@
+// Animation Example 
+// ----------------- 
+
+BASIC(
+
+int camera, light, dist = 0;
+
+type ent
+	field mesh as int
+	field anim_time as float
+endtype
+
+newtype ent man;
+
+function MAIN app	
+	Graphics3D(800,600,0,2);
+		
+	camera = CreateCamera(0);
+
+	light = CreateLight(1,0);
+	RotateEntity(light,-90,0,0,0);
+	
+	man.mesh = LoadAnimMesh("../media/zombie.b3d",0);
+	man.anim_time = 2;
+	PositionEntity(man.mesh,0,-5,300,0);
+
+	SetUpdateRate(60);
+end
+
+function Render event	
+	if KeyHit(KEY_ESC) do
+		End()
+	end			
+
+	if dist < 550 do
+		MoveEntity(man.mesh,0,0,-0.5);
+		man.anim_time = AnimateB3D(man.mesh, man.anim_time, 0.5, 2, 20);
+	elsedo		
+		// Move it up to start of idle animation
+		if man.anim_time < 137 do			
+			man.anim_time = 137				
+		end		
+		man.anim_time = AnimateB3D(man.mesh, man.anim_time, 0.25, 137, 169);
+	end	
+
+	dist++;
+		
+	RenderWorld();	
+	Text(320,500,"An Animated B3D Demo");	
+	Flip(); 	
+end 
+
+)

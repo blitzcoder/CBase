@@ -1,0 +1,67 @@
+// Makbot SFX Example 
+// ------------------ 
+
+BASIC(
+
+int camera, light, mak;
+int frame;
+int fps = 30;
+
+function MAIN app
+	Graphics3D(800,600,0,2);
+	
+	camera = CreateCamera(0);
+	//CameraClsColor(camera,39,40,34);
+	PositionEntity(camera,0,25,-60,0);
+
+	light = CreateLight(1,0);
+	AmbientLight(128,128,128);
+
+	//load flare
+	int flare=LoadSprite("../media/flare.bmp",1,0);
+	ScaleSprite(flare,5,5);
+	HideEntity(flare);
+
+	//load robot
+	TextureFilter("SHINE",65);
+	mak = LoadAnimMesh("../media/mak_running.b3d",0);
+	TurnEntity(mak,0,180,0,0);
+	EntityShininess(mak,0.5);
+
+	int eyepos=FindChild(mak,"eye");
+	int flareposa=FindChild(mak,"thrustA");
+	int flareposb=FindChild(mak,"thrustB");	
+
+	int eyeflare=CopyEntity(flare,eyepos);
+	MoveEntity(eyeflare,0,0,1.5);
+
+	int flarea=CopyEntity(flare,flareposa);
+	MoveEntity(flarea,0,-2,0);
+
+	int flareb=CopyEntity(flare,flareposb);
+	MoveEntity(flareb,0,-2,0);
+	
+	SetUpdateRate(30);
+end
+
+function Render event
+	if KeyHit(KEY_ESC) do		
+		End()
+	end		
+
+	frame = AnimateB3D(mak, frame, 1, 1, 24);
+	
+	if KeyDown(KEY_LEFT) then TurnEntity(mak,0,-3,0,0);
+	if KeyDown(KEY_RIGHT) then TurnEntity(mak,0,+3,0,0);
+
+	UpdateWorld(0);
+	RenderWorld();
+	FormatString(TextBuffer,"AnimTime: %0.0f",AnimTime(mak));		
+	Text(10,20,TextBuffer);		
+	FormatString(TextBuffer,"Frame   : %d",frame);		
+	Text(10,40,TextBuffer);
+	Text(10,60,"Use Left/Right Cursor to Turn Makbot");
+	Flip(); 	
+end 
+
+)  

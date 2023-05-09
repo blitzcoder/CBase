@@ -1,0 +1,64 @@
+// Shader Example 1
+// ---------------- 
+
+BASIC(
+
+int camera, light;
+int cube, cube2, cone, plane;
+int shader, shader2;
+
+// Greyscale and Sepia Shader Demo
+
+function MAIN app
+	Graphics3D(800,600,0,2);
+	
+	camera=CreateCamera(0);
+	CameraClsColor(camera,0,125,250);
+
+	light=CreateLight(2,0);
+	RotateEntity(light,-90,-45,0,0);
+
+	// Create cube 
+	cube=CreateCube(0);
+	PositionEntity(cube,-1.5,0,4,0);
+	EntityFX(cube,32);
+	
+	cube2=CreateCube(0);
+	PositionEntity(cube2,1.5,0,4,0);
+	EntityFX(cube2,32);
+	
+	cone=CreateCone(16,1,0);
+	PositionEntity(cone,0,0,10,0);
+	ScaleEntity(cone,2,2,2,0);
+	EntityColor(cone,255,0,0);
+		
+	plane=CreateCube(0);
+	ScaleEntity(plane,10,0.1,10,0);
+	MoveEntity(plane,0,-1.5,0);	
+
+	EntityTexture(plane,LoadTexture("../Media/colorkey.jpg",1),0,0);	
+
+	shader=LoadShader("","../media/shaders/default.vert.glsl","../media/shaders/greyscale.frag.glsl");
+	ShaderTexture(shader,LoadTexture("../Media/colorkey.jpg",1),"texture0",0);
+	ShadeEntity(cube,shader);
+	
+	shader2=LoadShader("","../media/shaders/default.vert.glsl","../media/shaders/sepia.frag.glsl");
+	ShaderTexture(shader2,LoadTexture("../Media/colorkey.jpg",1),"texture0",0);
+	ShadeEntity(cube2,shader2);	
+	
+	SetUpdateRate(60);
+end
+
+function Render event
+	if KeyHit(KEY_ESC) do
+		End()
+	end	
+	
+	TurnEntity(cube,.05,1,.05,0);
+	TurnEntity(cube2,.05,-1,.05,0);
+	
+	RenderWorld();	
+	Flip(); 	
+end 
+
+)
