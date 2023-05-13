@@ -46,9 +46,9 @@ MoveEntity(ball,0,0,.1)
 
 RenderWorld
 If picked>0 Then Do
-    Color(0,0,255)
-	Text(mx,my-25,"you are picking")
-	Text(mx,my-12,EntityName(picked))
+Color(0,0,255)
+Text(mx,my-25,"you are picking")
+Text(mx,my-12,EntityName(picked))
 EndIf
 
 Flip
